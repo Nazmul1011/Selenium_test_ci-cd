@@ -5,7 +5,6 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
       - name: ⬇️ Checkout Code
         uses: actions/checkout@v3
@@ -13,7 +12,7 @@ jobs:
       - name: 🐍 Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: '3.10'
 
       - name: 📦 Install dependencies
         run: |
@@ -21,11 +20,49 @@ jobs:
           pip install -r requirements.txt
 
       - name: 🧪 Run Selenium tests
-        run: |
-          pytest tests/ --alluredir=allure-results
+        run: pytest --alluredir=allure-results
 
       - name: ⬆️ Upload Allure Results
-        uses: actions/upload-artifact@v4 # ✅ fixed version
+        uses: actions/upload-artifact@v4
         with:
           name: allure-results
           path: allure-results/
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: ⬇️ Checkout Code
+        uses: actions/checkout@v3
+
+      - name: 📥 Download Allure Results Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results
+
+      - name: 🛠️ Install Java (needed for Allure CLI)
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: 📦 Install Allure CLI
+        run: |
+          wget https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
+          tar -xvzf allure-2.27.0.tgz
+          sudo mv allure-2.27.0 /opt/allure
+          sudo ln -s /opt/allure/bin/allure /usr/bin/allure
+
+      - name: 📊 Generate Allure Report
+        run: |
+          allure generate allure-results -o allure-report --clean
+
+      - name: 🚀 Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: allure-report
