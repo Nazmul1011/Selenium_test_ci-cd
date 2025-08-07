@@ -22,7 +22,7 @@ jobs:
 
     - name: 🧪 Run Selenium tests
       run: |
-        pytest --alluredir=allure-results
+        pytest tests/ --alluredir=allure-results
 
     - name: ⬆️ Upload Allure Results
       uses: actions/upload-artifact@v3
