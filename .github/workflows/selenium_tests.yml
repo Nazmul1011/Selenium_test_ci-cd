@@ -8,7 +8,7 @@ jobs:
 
     steps:
       - name: ⬇️ Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: 🐍 Set up Python
         uses: actions/setup-python@v4
@@ -25,7 +25,7 @@ jobs:
           pytest tests/ --alluredir=allure-results
 
       - name: ⬆️ Upload Allure Results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4 # ✅ fixed version
         with:
           name: allure-results
           path: allure-results/
