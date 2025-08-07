@@ -1,4 +1,4 @@
 selenium
 pytest
-pytest-allure-adaptor
-allure-pytest
+allure-pytest==2.13.2  # or any working version
+namedlist==1.7
