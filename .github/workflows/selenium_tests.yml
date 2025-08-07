@@ -38,13 +38,13 @@ jobs:
       - name: ⬇️ Checkout Code
         uses: actions/checkout@v3
 
-      - name: 📥 Download Allure Results Artifact
+      - name: 📥 Download Allure Results
         uses: actions/download-artifact@v4
         with:
           name: allure-results
           path: allure-results
 
-      - name: 🛠️ Install Java (needed for Allure CLI)
+      - name: 🛠️ Install Java (for Allure CLI)
         uses: actions/setup-java@v3
         with:
           java-version: '11'
